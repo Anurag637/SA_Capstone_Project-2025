@@ -9,20 +9,61 @@
   <img src="docs/system_flow.gif" alt="Animated System Flow" width="600">
   <p><em>Real-time price adjustment visualization</em></p>
 </div>
+# 🅿️ Dynamic Pricing for Urban Parking Lots  
+**Summer Analytics 2025 Capstone Project**  
+Hosted by Consulting & Analytics Club × Pathway
 
-## 🌟 Key Features
+---
 
-- 🕒 **Real-time pricing updates** (15-second intervals)
-- 📈 **Three integrated pricing models** with weighted consensus
-- 🚘 **Vehicle-type sensitive** (compact, standard, EV premium)
-- 🎛 **Smooth price transitions** (max 15% change/hour)
-- � **Competitor-aware pricing** (3km radius consideration)
-- 🚨 **Event-driven surge pricing** (concerts, sports games)
+## 🚀 Introduction
 
-## 📊 System Architecture
+This project implements a real-time intelligent pricing engine for urban parking lots using live-streamed data.  
+The system dynamically updates prices based on current occupancy, demand signals, and competitive conditions.
 
-### Core Data Pipeline
-```mermaid
+All processing is done using:
+- 🐍 Python 3.10
+- 🧮 Numpy & Pandas
+- 📡 Pathway for real-time streaming
+- 📊 Bokeh & Panel for interactive dashboards
+
+---
+
+## 🧠 Models Implemented
+
+### ✅ Model 1: Baseline Linear Pricing  
+Simple, interpretable, and occupancy-driven  
+Formula:  
+Price_t+1 = Price_t + α × (Occupancy / Capacity)
+
+
+
+### ✅ Model 2: Demand-Based Pricing  
+Includes:
+- Occupancy ratio
+- Queue length
+- Traffic congestion
+- Special day flag
+- Vehicle type weights
+
+Formula:  
+Demand = α(Occupancy/Capacity) + βQueue - γTraffic + δEvent + εVehicleWeight
+Price = BasePrice × (1 + λ × NormalizedDemand)
+
+
+
+### ✅ Model 3: Competitive Pricing  
+Adds spatial awareness and market intelligence:
+- Computes haversine distance to nearby lots
+- Adjusts price relative to competitor average within 0.5 km
+
+Logic:
+- Nearby lots cheaper → lower price
+- Nearby lots full or expensive → raise price
+
+---
+
+## 📈 Core Data Pipeline
+
 %%{init: {'theme': 'neutral', 'themeVariables': { 'primaryColor': '#ffdfd3'}}}%%
 flowchart TD
     A[Parking Logs\nCSV/API] --> B{Data Preprocessor}
@@ -37,7 +78,6 @@ flowchart TD
     H --> J[Parking Signs API]
     H --> K[Mobile Notifications]
 
-
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#d4f1f9'}}}%%
 graph TD
     subgraph Input Layer
@@ -46,19 +86,19 @@ graph TD
         C[Traffic Data]
         D[Event Calendar]
     end
-    
+
     subgraph Pricing Models
         E[Linear Base Price\n+15% per 20% occupancy]
         F[Demand-Based\nExponential curve]
         G[Competitive\nMarket-aware adjustment]
     end
-    
+
     subgraph Output Layer
         H[Weighted Consensus Price]
         I[Surge Flag]
         J[Alternative Lot Suggestions]
     end
-    
+
     A --> E
     B --> F
     C --> G
@@ -69,8 +109,6 @@ graph TD
     H --> I
     G --> J
 
-
-
 pie
     title Technology Distribution
     "Python 3.10" : 35
@@ -78,4 +116,3 @@ pie
     "Pandas/Numpy" : 20
     "Bokeh" : 15
     "Custom C Extensions" : 5
-
